@@ -20,9 +20,16 @@ public class Position {
 	public Integer getCol() {
 		return col;
 	}
-	
 
-	public void setVlaues(Integer row, Integer col) {
+	public void setRow(Integer row) {
+		this.row = row;
+	}
+
+	public void setCol(Integer col) {
+		this.col = col;
+	}
+
+	public void setValues(Integer row, Integer col) {
 		this.row = row;
 		this.col = col;
 	}

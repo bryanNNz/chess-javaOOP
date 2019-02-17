@@ -3,6 +3,7 @@ package application;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
@@ -40,12 +41,32 @@ public class UI {
 		}
 	}
 	
+	public static void printMatch(ChessMatch chessMatch) {
+		printBoard(chessMatch.getPiece());
+		System.out.println();
+		System.out.println("TURN: " + chessMatch.getTurn());
+		System.out.println("WAITING PLAYER: " + chessMatch.getCurrentPlayer());
+	}
+	
 	public static void printBoard(ChessPiece[][] pieces) {
 		for (int l = 0; l < pieces.length; l++) {
 			System.out.print((8 - l) + " ");
 
 			for (int c = 0; c < pieces.length; c++) {
-				printPiece(pieces[l][c]);
+				printPiece(pieces[l][c], false);
+			}
+
+			System.out.println();
+		}
+		System.out.println("  A B C D E F G H");
+	}
+	
+	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
+		for (int l = 0; l < pieces.length; l++) {
+			System.out.print((8 - l) + " ");
+
+			for (int c = 0; c < pieces.length; c++) {
+				printPiece(pieces[l][c], possibleMoves[l][c]);
 			}
 
 			System.out.println();
@@ -53,9 +74,13 @@ public class UI {
 		System.out.println("  A B C D E F G H");
 	}
 
-	public static void printPiece(ChessPiece piece) {
+
+	public static void printPiece(ChessPiece piece, boolean background) {
+		if(background) {
+			System.out.print(ANSI_BLUE_BACKGROUND);
+		}
 		if (piece == null) {
-			System.out.print("-");
+			System.out.print("-" + ANSI_RESET);
 		} else {
 			if(piece.getColor() == Color.WHITE) {
 				System.out.print(ANSI_WHITE + piece + ANSI_RESET);				
@@ -65,5 +90,10 @@ public class UI {
 		}
 
 		System.out.print(" ");
+	}
+	
+	public static void clearScreen() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 	}
 }
