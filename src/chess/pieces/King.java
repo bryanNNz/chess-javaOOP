@@ -2,13 +2,16 @@ package chess.pieces;
 
 import board.Board;
 import board.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class King extends ChessPiece {
-
-	public King(Board board, Color color) {
+	private ChessMatch chessMatch;
+	
+	public King(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
+		this.chessMatch = chessMatch;
 	}
 	
 
@@ -70,7 +73,37 @@ public class King extends ChessPiece {
 			matrix[p.getRow()][p.getCol()] = true;
 		}
 		
+		//castling
+		if(getMoveCount() == 0 && !chessMatch.getCheck()) {
+			//castling king side
+			Position p_aux1 = new Position(position.getRow(), position.getCol() + 3);
+			if(testRookCastling(p_aux1)) {
+				Position p1 = new Position(position.getRow(), position.getCol() + 1);
+				Position p2 = new Position(position.getRow(), position.getCol() + 2);
+				
+				if(getBoard().piece(p1) == null && getBoard().piece(p2) == null) {
+					matrix[position.getRow()][position.getCol() + 2] = true; 
+				}
+			}
+			//castling queen side
+			Position p_aux2 = new Position(position.getRow(), position.getCol() - 4);
+			if(testRookCastling(p_aux2)) {
+				Position p1 = new Position(position.getRow(), position.getCol() - 1);
+				Position p2 = new Position(position.getRow(), position.getCol() - 2);
+				Position p3 = new Position(position.getRow(), position.getCol() - 3);
+				
+				if(getBoard().piece(p1) == null && getBoard().piece(p2) == null && getBoard().piece(p3) == null) {
+					matrix[position.getRow()][position.getCol() - 2] = true; 
+				}
+			}
+		}
+		
 		return matrix;
+	}
+	
+	private boolean testRookCastling(Position position) {
+		ChessPiece p = (ChessPiece) getBoard().piece(position);
+		return p != null && p instanceof Rook && p.getColor() == getColor() && p.getMoveCount() == 0;
 	}
 	
 	@Override
